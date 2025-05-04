@@ -587,6 +587,154 @@ const Accounting = () => {
       }
     ];
 
+    // Enhanced Market Performance Metrics
+    const marketMetricsData = [
+      {
+        [t('accounting.description')]: t('accounting.marketPerformance'),
+        [t('accounting.amount')]: '',
+        [t('accounting.trend')]: '',
+        [t('accounting.analysis')]: ''
+      },
+      {
+        [t('accounting.description')]: '  ' + t('accounting.marketCapitalization'),
+        [t('accounting.amount')]: '=SUMIFS(INDIRECT("MarketData!B:B"),INDIRECT("MarketData!A:A"),"*Stock Price*")*SUMIFS(INDIRECT("BalanceSheet!B:B"),INDIRECT("BalanceSheet!A:A"),"*Shares Outstanding*")',
+        [t('accounting.trend')]: '=IF(B2>1000000000,"Large Cap",IF(B2>500000000,"Mid Cap","Small Cap"))',
+        [t('accounting.analysis')]: '=IF(B2>1000000000,"Large market presence",IF(B2>500000000,"Moderate market presence","Small market presence"))'
+      },
+      {
+        [t('accounting.description')]: '  ' + t('accounting.enterpriseValue'),
+        [t('accounting.amount')]: '=B2+SUMIFS(INDIRECT("BalanceSheet!B:B"),INDIRECT("BalanceSheet!A:A"),"*Debt*")-SUMIFS(INDIRECT("BalanceSheet!B:B"),INDIRECT("BalanceSheet!A:A"),"*Cash*")',
+        [t('accounting.trend')]: '=IF(B3/B2<1.5,"Conservative",IF(B3/B2<2,"Moderate","Aggressive"))',
+        [t('accounting.analysis')]: '=IF(B3/B2<1.5,"Conservative capital structure",IF(B3/B2<2,"Moderate leverage","High leverage - potential risk"))'
+      },
+      {
+        [t('accounting.description')]: '  ' + t('accounting.priceToBook'),
+        [t('accounting.amount')]: '=SUMIFS(INDIRECT("MarketData!B:B"),INDIRECT("MarketData!A:A"),"*Stock Price*")/(SUMIFS(INDIRECT("BalanceSheet!B:B"),INDIRECT("BalanceSheet!A:A"),"*Equity*")/SUMIFS(INDIRECT("BalanceSheet!B:B"),INDIRECT("BalanceSheet!A:A"),"*Shares Outstanding*"))',
+        [t('accounting.trend')]: '=IF(B4<1,"Undervalued",IF(B4<2,"Fairly valued","Overvalued"))',
+        [t('accounting.analysis')]: '=IF(B4<1,"Potential value investment",IF(B4<2,"Market aligned","Potential overvaluation"))'
+      },
+      {
+        [t('accounting.description')]: '  ' + t('accounting.priceToSales'),
+        [t('accounting.amount')]: '=B2/SUMIFS(INDIRECT("ProfitAndLoss!B:B"),INDIRECT("ProfitAndLoss!A:A"),"*Sales*")',
+        [t('accounting.trend')]: '=IF(B5<1,"Undervalued",IF(B5<3,"Fairly valued","Overvalued"))',
+        [t('accounting.analysis')]: '=IF(B5<1,"Potential value opportunity",IF(B5<3,"Market aligned","Potential overvaluation"))'
+      },
+      {
+        [t('accounting.description')]: '  ' + t('accounting.dividendYield'),
+        [t('accounting.amount')]: '=SUMIFS(INDIRECT("ProfitAndLoss!B:B"),INDIRECT("ProfitAndLoss!A:A"),"*Dividends*")/SUMIFS(INDIRECT("MarketData!B:B"),INDIRECT("MarketData!A:A"),"*Stock Price*")',
+        [t('accounting.trend')]: '=IF(B6>0.05,"High",IF(B6>0.02,"Moderate","Low"))',
+        [t('accounting.analysis')]: '=IF(B6>0.05,"Attractive for income investors",IF(B6>0.02,"Moderate income potential","Low income potential"))'
+      },
+      {
+        [t('accounting.description')]: '  ' + t('accounting.pegRatio'),
+        [t('accounting.amount')]: '=B4/(SUMIFS(INDIRECT("ProfitAndLoss!B:B"),INDIRECT("ProfitAndLoss!A:A"),"*Net Income Growth*")*100)',
+        [t('accounting.trend')]: '=IF(B7<1,"Undervalued",IF(B7<2,"Fairly valued","Overvalued"))',
+        [t('accounting.analysis')]: '=IF(B7<1,"Growth at reasonable price",IF(B7<2,"Market aligned","Potential overvaluation"))'
+      },
+      {
+        [t('accounting.description')]: '  ' + t('accounting.beta'),
+        [t('accounting.amount')]: '=SUMIFS(INDIRECT("MarketData!B:B"),INDIRECT("MarketData!A:A"),"*Beta*")',
+        [t('accounting.trend')]: '=IF(B8<0.8,"Defensive",IF(B8<1.2,"Market",IF(B8<1.5,"Aggressive","Highly Volatile")))',
+        [t('accounting.analysis')]: '=IF(B8<0.8,"Lower market risk",IF(B8<1.2,"Market risk",IF(B8<1.5,"Higher market risk","Very high market risk")))'
+      },
+      {
+        [t('accounting.description')]: '  ' + t('accounting.returnOnEquity'),
+        [t('accounting.amount')]: '=SUMIFS(INDIRECT("ProfitAndLoss!B:B"),INDIRECT("ProfitAndLoss!A:A"),"*Net Income*")/SUMIFS(INDIRECT("BalanceSheet!B:B"),INDIRECT("BalanceSheet!A:A"),"*Equity*")',
+        [t('accounting.trend')]: '=IF(B9>0.15,"Excellent",IF(B9>0.1,"Good",IF(B9>0.05,"Fair","Poor")))',
+        [t('accounting.analysis')]: '=IF(B9>0.15,"Exceptional return to shareholders",IF(B9>0.1,"Good return to shareholders",IF(B9>0.05,"Adequate return","Poor return")))'
+      },
+      {
+        [t('accounting.description')]: '  ' + t('accounting.returnOnAssets'),
+        [t('accounting.amount')]: '=SUMIFS(INDIRECT("ProfitAndLoss!B:B"),INDIRECT("ProfitAndLoss!A:A"),"*Net Income*")/SUMIFS(INDIRECT("BalanceSheet!B:B"),INDIRECT("BalanceSheet!A:A"),"*Total Assets*")',
+        [t('accounting.trend')]: '=IF(B10>0.1,"Excellent",IF(B10>0.05,"Good",IF(B10>0,"Fair","Poor")))',
+        [t('accounting.analysis')]: '=IF(B10>0.1,"Highly efficient asset utilization",IF(B10>0.05,"Good asset utilization",IF(B10>0,"Adequate utilization","Inefficient utilization")))'
+      },
+      {
+        [t('accounting.description')]: '  ' + t('accounting.freeCashFlow'),
+        [t('accounting.amount')]: '=SUMIFS(INDIRECT("CashFlow!B:B"),INDIRECT("CashFlow!A:A"),"*Operating Cash Flow*")-SUMIFS(INDIRECT("CashFlow!B:B"),INDIRECT("CashFlow!A:A"),"*Capital Expenditures*")',
+        [t('accounting.trend')]: '=IF(B11>0,"Positive",IF(B11=0,"Neutral","Negative"))',
+        [t('accounting.analysis')]: '=IF(B11>0,"Generating positive free cash flow",IF(B11=0,"Breaking even","Negative cash flow - potential concern"))'
+      },
+      {
+        [t('accounting.description')]: '  ' + t('accounting.freeCashFlowYield'),
+        [t('accounting.amount')]: '=B11/B2',
+        [t('accounting.trend')]: '=IF(B12>0.05,"High",IF(B12>0.02,"Moderate","Low"))',
+        [t('accounting.analysis')]: '=IF(B12>0.05,"Attractive cash flow yield",IF(B12>0.02,"Moderate cash flow yield","Low cash flow yield"))'
+      },
+      {
+        [t('accounting.description')]: '  ' + t('accounting.freeCashFlowToEquity'),
+        [t('accounting.amount')]: '=B11/SUMIFS(INDIRECT("BalanceSheet!B:B"),INDIRECT("BalanceSheet!A:A"),"*Equity*")',
+        [t('accounting.trend')]: '=IF(B13>0.1,"Excellent",IF(B13>0.05,"Good",IF(B13>0,"Fair","Poor")))',
+        [t('accounting.analysis')]: '=IF(B13>0.1,"Strong cash flow to equity",IF(B13>0.05,"Good cash flow generation",IF(B13>0,"Adequate cash flow","Poor cash flow generation")))'
+      },
+      {
+        [t('accounting.description')]: '  ' + t('accounting.ebitda'),
+        [t('accounting.amount')]: '=SUMIFS(INDIRECT("ProfitAndLoss!B:B"),INDIRECT("ProfitAndLoss!A:A"),"*Operating Income*")+SUMIFS(INDIRECT("ProfitAndLoss!B:B"),INDIRECT("ProfitAndLoss!A:A"),"*Depreciation*")+SUMIFS(INDIRECT("ProfitAndLoss!B:B"),INDIRECT("ProfitAndLoss!A:A"),"*Amortization*")',
+        [t('accounting.trend')]: '=IF(B14>0,"Positive",IF(B14=0,"Neutral","Negative"))',
+        [t('accounting.analysis')]: '=IF(B14>0,"Strong operating performance",IF(B14=0,"Breaking even","Negative operating performance"))'
+      },
+      {
+        [t('accounting.description')]: '  ' + t('accounting.evToEbitda'),
+        [t('accounting.amount')]: '=B3/B14',
+        [t('accounting.trend')]: '=IF(B15<10,"Undervalued",IF(B15<15,"Fairly valued","Overvalued"))',
+        [t('accounting.analysis')]: '=IF(B15<10,"Potential value opportunity",IF(B15<15,"Market aligned","Potential overvaluation"))'
+      },
+      {
+        [t('accounting.description')]: '  ' + t('accounting.ebitdaMargin'),
+        [t('accounting.amount')]: '=B14/SUMIFS(INDIRECT("ProfitAndLoss!B:B"),INDIRECT("ProfitAndLoss!A:A"),"*Sales*")',
+        [t('accounting.trend')]: '=IF(B16>0.2,"Excellent",IF(B16>0.1,"Good",IF(B16>0.05,"Fair","Poor")))',
+        [t('accounting.analysis')]: '=IF(B16>0.2,"Exceptional operating efficiency",IF(B16>0.1,"Good operating performance",IF(B16>0.05,"Adequate performance","Poor operating efficiency")))'
+      },
+      {
+        [t('accounting.description')]: '  ' + t('accounting.operatingCashFlow'),
+        [t('accounting.amount')]: '=SUMIFS(INDIRECT("CashFlow!B:B"),INDIRECT("CashFlow!A:A"),"*Operating Cash Flow*")',
+        [t('accounting.trend')]: '=IF(B17>0,"Positive",IF(B17=0,"Neutral","Negative"))',
+        [t('accounting.analysis')]: '=IF(B17>0,"Strong operating cash generation",IF(B17=0,"Breaking even","Negative operating cash flow - potential concern"))'
+      },
+      {
+        [t('accounting.description')]: '  ' + t('accounting.capitalExpenditures'),
+        [t('accounting.amount')]: '=SUMIFS(INDIRECT("CashFlow!B:B"),INDIRECT("CashFlow!A:A"),"*Capital Expenditures*")',
+        [t('accounting.trend')]: '=IF(B18<0,"Investment",IF(B18=0,"Maintenance","Disinvestment"))',
+        [t('accounting.analysis')]: '=IF(B18<0,"Growth investment",IF(B18=0,"Maintenance only","Asset disposal"))'
+      },
+      {
+        [t('accounting.description')]: '  ' + t('accounting.workingCapital'),
+        [t('accounting.amount')]: '=SUMIFS(INDIRECT("BalanceSheet!B:B"),INDIRECT("BalanceSheet!A:A"),"*Current Assets*")-SUMIFS(INDIRECT("BalanceSheet!B:B"),INDIRECT("BalanceSheet!A:A"),"*Current Liabilities*")',
+        [t('accounting.trend')]: '=IF(B19>0,"Positive",IF(B19=0,"Neutral","Negative"))',
+        [t('accounting.analysis')]: '=IF(B19>0,"Adequate working capital",IF(B19=0,"Minimal working capital","Insufficient working capital"))'
+      },
+      {
+        [t('accounting.description')]: '  ' + t('accounting.workingCapitalRatio'),
+        [t('accounting.amount')]: '=SUMIFS(INDIRECT("BalanceSheet!B:B"),INDIRECT("BalanceSheet!A:A"),"*Current Assets*")/SUMIFS(INDIRECT("BalanceSheet!B:B"),INDIRECT("BalanceSheet!A:A"),"*Current Liabilities*")',
+        [t('accounting.trend')]: '=IF(B20>2,"Excellent",IF(B20>1.5,"Good",IF(B20>1,"Fair","Poor")))',
+        [t('accounting.analysis')]: '=IF(B20>2,"Strong liquidity position",IF(B20>1.5,"Good liquidity",IF(B20>1,"Adequate liquidity","Potential liquidity issues")))'
+      },
+      {
+        [t('accounting.description')]: '  ' + t('accounting.cashConversionCycle'),
+        [t('accounting.amount')]: '=SUMIFS(INDIRECT("BalanceSheet!B:B"),INDIRECT("BalanceSheet!A:A"),"*Inventory*")/SUMIFS(INDIRECT("ProfitAndLoss!B:B"),INDIRECT("ProfitAndLoss!A:A"),"*Cost of Goods Sold*")*365+SUMIFS(INDIRECT("BalanceSheet!B:B"),INDIRECT("BalanceSheet!A:A"),"*Accounts Receivable*")/SUMIFS(INDIRECT("ProfitAndLoss!B:B"),INDIRECT("ProfitAndLoss!A:A"),"*Sales*")*365-SUMIFS(INDIRECT("BalanceSheet!B:B"),INDIRECT("BalanceSheet!A:A"),"*Accounts Payable*")/SUMIFS(INDIRECT("ProfitAndLoss!B:B"),INDIRECT("ProfitAndLoss!A:A"),"*Cost of Goods Sold*")*365',
+        [t('accounting.trend')]: '=IF(B21<30,"Excellent",IF(B21<60,"Good",IF(B21<90,"Fair","Poor")))',
+        [t('accounting.analysis')]: '=IF(B21<30,"Efficient cash conversion",IF(B21<60,"Good cash management",IF(B21<90,"Adequate cash cycle","Inefficient cash conversion")))'
+      },
+      {
+        [t('accounting.description')]: '  ' + t('accounting.daysSalesOutstanding'),
+        [t('accounting.amount')]: '=SUMIFS(INDIRECT("BalanceSheet!B:B"),INDIRECT("BalanceSheet!A:A"),"*Accounts Receivable*")/SUMIFS(INDIRECT("ProfitAndLoss!B:B"),INDIRECT("ProfitAndLoss!A:A"),"*Sales*")*365',
+        [t('accounting.trend')]: '=IF(B22<30,"Excellent",IF(B22<45,"Good",IF(B22<60,"Fair","Poor")))',
+        [t('accounting.analysis')]: '=IF(B22<30,"Efficient receivables collection",IF(B22<45,"Good receivables management",IF(B22<60,"Adequate collection period","Slow receivables collection")))'
+      },
+      {
+        [t('accounting.description')]: '  ' + t('accounting.daysInventoryOutstanding'),
+        [t('accounting.amount')]: '=SUMIFS(INDIRECT("BalanceSheet!B:B"),INDIRECT("BalanceSheet!A:A"),"*Inventory*")/SUMIFS(INDIRECT("ProfitAndLoss!B:B"),INDIRECT("ProfitAndLoss!A:A"),"*Cost of Goods Sold*")*365',
+        [t('accounting.trend')]: '=IF(B23<30,"Excellent",IF(B23<45,"Good",IF(B23<60,"Fair","Poor")))',
+        [t('accounting.analysis')]: '=IF(B23<30,"Efficient inventory management",IF(B23<45,"Good inventory turnover",IF(B23<60,"Adequate inventory period","Slow inventory turnover")))'
+      },
+      {
+        [t('accounting.description')]: '  ' + t('accounting.daysPayableOutstanding'),
+        [t('accounting.amount')]: '=SUMIFS(INDIRECT("BalanceSheet!B:B"),INDIRECT("BalanceSheet!A:A"),"*Accounts Payable*")/SUMIFS(INDIRECT("ProfitAndLoss!B:B"),INDIRECT("ProfitAndLoss!A:A"),"*Cost of Goods Sold*")*365',
+        [t('accounting.trend')]: '=IF(B24>45,"Excellent",IF(B24>30,"Good",IF(B24>15,"Fair","Poor")))',
+        [t('accounting.analysis')]: '=IF(B24>45,"Efficient payables management",IF(B24>30,"Good payables period",IF(B24>15,"Adequate payment terms","Short payment terms")))'
+      }
+    ];
+
     // Enhanced helper function to add formatting, formulas, charts, and sparklines
     const addFormatting = (worksheet: XLSX.WorkSheet, data: any[]) => {
       // Add column widths
@@ -651,19 +799,111 @@ const Accounting = () => {
             f: row[t('accounting.analysis')]
           };
         }
+
+        // Add data validation and conditional formatting
+        if (row[t('accounting.amount')] && row[t('accounting.amount')].startsWith('=')) {
+          cell.dv = {
+            type: 'decimal',
+            operator: 'greaterThan',
+            value: 0,
+            showErrorMessage: true,
+            errorTitle: 'Invalid Value',
+            error: 'Please enter a positive number'
+          };
+        }
+
+        // Add enhanced conditional formatting
+        if (row[t('accounting.trend')] && row[t('accounting.trend')].startsWith('=')) {
+          cell.cf = [
+            {
+              type: 'cellIs',
+              operator: 'greaterThan',
+              value: 0,
+              style: { font: { color: { rgb: '008000' } } }
+            },
+            {
+              type: 'cellIs',
+              operator: 'lessThan',
+              value: 0,
+              style: { font: { color: { rgb: 'FF0000' } } }
+            },
+            {
+              type: 'cellIs',
+              operator: 'equalTo',
+              value: 0,
+              style: { font: { color: { rgb: '000000' } } }
+            }
+          ];
+        }
+
+        // Add sparklines for trend visualization
+        if (row[t('accounting.amount')] && row[t('accounting.amount')].startsWith('=')) {
+          const sparklineRef = XLSX.utils.encode_cell({ r: rowIndex, c: 5 });
+          worksheet[sparklineRef] = {
+            t: 's',
+            f: `=SPARKLINE(OFFSET(${cellRef},0,-4):${cellRef},{"charttype","line";"color","#2196F3"})`
+          };
+        }
       });
 
-      // Add charts for financial ratios
-      if (worksheet === ratiosSheet) {
+      // Add enhanced charts for market metrics
+      if (worksheet === marketMetricsSheet) {
         const charts = [
+          {
+            type: 'bar',
+            data: {
+              labels: ['Operating CF', 'Capital Exp', 'Working Capital', 'WC Ratio', 'Cash Cycle', 'DSO', 'DIO', 'DPO'],
+              datasets: [
+                {
+                  label: 'Current',
+                  data: ['=B17', '=B18', '=B19', '=B20', '=B21', '=B22', '=B23', '=B24'],
+                  backgroundColor: ['#4CAF50', '#2196F3', '#FFC107', '#FF5722', '#9C27B0', '#00BCD4', '#795548', '#607D8B']
+                }
+              ]
+            },
+            options: {
+              title: { display: true, text: 'Working Capital and Cash Flow Metrics' },
+              scales: { yAxes: [{ ticks: { beginAtZero: true } }] }
+            }
+          },
+          {
+            type: 'line',
+            data: {
+              labels: ['Q1', 'Q2', 'Q3', 'Q4'],
+              datasets: [
+                {
+                  label: 'Operating Cash Flow',
+                  data: ['=OFFSET(B17,0,-1)', '=OFFSET(B17,0,-2)', '=OFFSET(B17,0,-3)', '=OFFSET(B17,0,-4)'],
+                  borderColor: '#2196F3',
+                  fill: false
+                },
+                {
+                  label: 'Working Capital',
+                  data: ['=OFFSET(B19,0,-1)', '=OFFSET(B19,0,-2)', '=OFFSET(B19,0,-3)', '=OFFSET(B19,0,-4)'],
+                  borderColor: '#4CAF50',
+                  fill: false
+                },
+                {
+                  label: 'Cash Conversion Cycle',
+                  data: ['=OFFSET(B21,0,-1)', '=OFFSET(B21,0,-2)', '=OFFSET(B21,0,-3)', '=OFFSET(B21,0,-4)'],
+                  borderColor: '#FF5722',
+                  fill: false
+                }
+              ]
+            },
+            options: {
+              title: { display: true, text: 'Cash Flow and Working Capital Trends' },
+              scales: { yAxes: [{ ticks: { beginAtZero: true } }] }
+            }
+          },
           {
             type: 'radar',
             data: {
-              labels: ['Current Ratio', 'Quick Ratio', 'Cash Ratio', 'Gross Margin', 'Operating Margin', 'Net Margin'],
+              labels: ['Working Capital Ratio', 'Cash Conversion Cycle', 'DSO', 'DIO', 'DPO'],
               datasets: [
                 {
-                  label: 'Company',
-                  data: ['=B2', '=B3', '=B4', '=B6', '=B7', '=B8'],
+                  label: 'Current',
+                  data: ['=B20', '=B21', '=B22', '=B23', '=B24'],
                   backgroundColor: 'rgba(75, 192, 192, 0.2)',
                   borderColor: 'rgba(75, 192, 192, 1)',
                   pointBackgroundColor: 'rgba(75, 192, 192, 1)',
@@ -674,60 +914,10 @@ const Accounting = () => {
               ]
             },
             options: {
-              title: { display: true, text: 'Financial Health Overview' },
+              title: { display: true, text: 'Working Capital Efficiency' },
               scale: {
                 ticks: { beginAtZero: true }
               }
-            }
-          },
-          {
-            type: 'bar',
-            data: {
-              labels: ['Asset Turnover', 'Inventory Turnover', 'Receivables Turnover', 'Payables Turnover'],
-              datasets: [
-                {
-                  label: 'Company',
-                  data: ['=B10', '=B11', '=B12', '=B13'],
-                  backgroundColor: ['#4CAF50', '#2196F3', '#FFC107', '#FF5722']
-                }
-              ]
-            },
-            options: {
-              title: { display: true, text: 'Efficiency Metrics' },
-              scales: { yAxes: [{ ticks: { beginAtZero: true } }] }
-            }
-          },
-          {
-            type: 'doughnut',
-            data: {
-              labels: ['Debt', 'Equity'],
-              datasets: [
-                {
-                  data: ['=B15', '1'],
-                  backgroundColor: ['#FF5722', '#4CAF50']
-                }
-              ]
-            },
-            options: {
-              title: { display: true, text: 'Capital Structure' }
-            }
-          },
-          {
-            type: 'line',
-            data: {
-              labels: ['Q1', 'Q2', 'Q3', 'Q4'],
-              datasets: [
-                {
-                  label: 'EPS',
-                  data: ['=B19', '=OFFSET(B19,0,-1)', '=OFFSET(B19,0,-2)', '=OFFSET(B19,0,-3)'],
-                  borderColor: '#2196F3',
-                  fill: false
-                }
-              ]
-            },
-            options: {
-              title: { display: true, text: 'Earnings Per Share Trend' },
-              scales: { yAxes: [{ ticks: { beginAtZero: true } }] }
             }
           }
         ];
@@ -801,6 +991,18 @@ const Accounting = () => {
     });
     addFormatting(ratiosSheet, financialRatiosData);
     XLSX.utils.book_append_sheet(workbook, ratiosSheet, t('accounting.financialRatios'));
+
+    // Add Market Metrics sheet
+    const marketMetricsSheet = XLSX.utils.json_to_sheet(marketMetricsData, {
+      header: [
+        t('accounting.description'),
+        t('accounting.amount'),
+        t('accounting.trend'),
+        t('accounting.analysis')
+      ]
+    });
+    addFormatting(marketMetricsSheet, marketMetricsData);
+    XLSX.utils.book_append_sheet(workbook, marketMetricsSheet, t('accounting.marketMetrics'));
 
     // Generate Excel file
     XLSX.writeFile(workbook, `financial-reports-${dateRange.from}-to-${dateRange.to}.xlsx`);
