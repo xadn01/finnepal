@@ -16,5 +16,15 @@ export default defineConfig({
   build: {
     outDir: 'dist',
     sourcemap: true,
+    rollupOptions: {
+      output: {
+        manualChunks: {
+          vendor: ['react', 'react-dom', 'react-router-dom'],
+          firebase: ['firebase/app', 'firebase/firestore', 'firebase/auth'],
+          ui: ['@headlessui/react', '@heroicons/react', 'daisyui'],
+        },
+      },
+    },
   },
+  base: process.env.NODE_ENV === 'production' ? '/' : '/',
 }); 

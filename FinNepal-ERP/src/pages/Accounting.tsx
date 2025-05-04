@@ -587,6 +587,34 @@ const Accounting = () => {
       }
     ];
 
+    // Industry-specific cash flow benchmarks
+    const industryCashFlowBenchmarks = {
+      retail: {
+        operatingCashFlowMargin: { excellent: 0.15, good: 0.1, fair: 0.05 },
+        cashConversionCycle: { excellent: 30, good: 45, fair: 60 },
+        workingCapitalRatio: { excellent: 2.0, good: 1.5, fair: 1.0 },
+        dso: { excellent: 30, good: 45, fair: 60 },
+        dio: { excellent: 30, good: 45, fair: 60 },
+        dpo: { excellent: 45, good: 30, fair: 15 }
+      },
+      manufacturing: {
+        operatingCashFlowMargin: { excellent: 0.2, good: 0.15, fair: 0.1 },
+        cashConversionCycle: { excellent: 45, good: 60, fair: 75 },
+        workingCapitalRatio: { excellent: 2.5, good: 2.0, fair: 1.5 },
+        dso: { excellent: 45, good: 60, fair: 75 },
+        dio: { excellent: 45, good: 60, fair: 75 },
+        dpo: { excellent: 60, good: 45, fair: 30 }
+      },
+      service: {
+        operatingCashFlowMargin: { excellent: 0.25, good: 0.2, fair: 0.15 },
+        cashConversionCycle: { excellent: 15, good: 30, fair: 45 },
+        workingCapitalRatio: { excellent: 1.5, good: 1.2, fair: 1.0 },
+        dso: { excellent: 15, good: 30, fair: 45 },
+        dio: { excellent: 0, good: 0, fair: 0 },
+        dpo: { excellent: 30, good: 15, fair: 0 }
+      }
+    };
+
     // Enhanced Market Performance Metrics
     const marketMetricsData = [
       {
@@ -732,6 +760,60 @@ const Accounting = () => {
         [t('accounting.amount')]: '=SUMIFS(INDIRECT("BalanceSheet!B:B"),INDIRECT("BalanceSheet!A:A"),"*Accounts Payable*")/SUMIFS(INDIRECT("ProfitAndLoss!B:B"),INDIRECT("ProfitAndLoss!A:A"),"*Cost of Goods Sold*")*365',
         [t('accounting.trend')]: '=IF(B24>45,"Excellent",IF(B24>30,"Good",IF(B24>15,"Fair","Poor")))',
         [t('accounting.analysis')]: '=IF(B24>45,"Efficient payables management",IF(B24>30,"Good payables period",IF(B24>15,"Adequate payment terms","Short payment terms")))'
+      },
+      {
+        [t('accounting.description')]: '  ' + t('accounting.operatingCashFlowMargin'),
+        [t('accounting.amount')]: '=B17/SUMIFS(INDIRECT("ProfitAndLoss!B:B"),INDIRECT("ProfitAndLoss!A:A"),"*Sales*")',
+        [t('accounting.trend')]: `=IF(B25>${industryCashFlowBenchmarks.retail.operatingCashFlowMargin.excellent},"Excellent",IF(B25>${industryCashFlowBenchmarks.retail.operatingCashFlowMargin.good},"Good",IF(B25>${industryCashFlowBenchmarks.retail.operatingCashFlowMargin.fair},"Fair","Poor")))`,
+        [t('accounting.analysis')]: `=IF(B25>${industryCashFlowBenchmarks.retail.operatingCashFlowMargin.excellent},"Above industry average",IF(B25>${industryCashFlowBenchmarks.retail.operatingCashFlowMargin.good},"Industry average",IF(B25>${industryCashFlowBenchmarks.retail.operatingCashFlowMargin.fair},"Below industry average","Significantly below industry average")))`
+      },
+      {
+        [t('accounting.description')]: '  ' + t('accounting.cashFlowCoverage'),
+        [t('accounting.amount')]: '=B17/SUMIFS(INDIRECT("ProfitAndLoss!B:B"),INDIRECT("ProfitAndLoss!A:A"),"*Interest Expense*")',
+        [t('accounting.trend')]: '=IF(B26>3,"Excellent",IF(B26>2,"Good",IF(B26>1,"Fair","Poor")))',
+        [t('accounting.analysis')]: '=IF(B26>3,"Strong ability to service debt",IF(B26>2,"Good debt service capacity",IF(B26>1,"Adequate coverage","Potential debt service issues")))'
+      },
+      {
+        [t('accounting.description')]: '  ' + t('accounting.cashFlowToDebt'),
+        [t('accounting.amount')]: '=B17/SUMIFS(INDIRECT("BalanceSheet!B:B"),INDIRECT("BalanceSheet!A:A"),"*Total Debt*")',
+        [t('accounting.trend')]: '=IF(B27>0.2,"Excellent",IF(B27>0.15,"Good",IF(B27>0.1,"Fair","Poor")))',
+        [t('accounting.analysis')]: '=IF(B27>0.2,"Strong debt repayment capacity",IF(B27>0.15,"Good debt management",IF(B27>0.1,"Adequate repayment ability","Potential debt repayment issues")))'
+      },
+      {
+        [t('accounting.description')]: '  ' + t('accounting.cashFlowToRevenue'),
+        [t('accounting.amount')]: '=B17/SUMIFS(INDIRECT("ProfitAndLoss!B:B"),INDIRECT("ProfitAndLoss!A:A"),"*Sales*")',
+        [t('accounting.trend')]: '=IF(B28>0.15,"Excellent",IF(B28>0.1,"Good",IF(B28>0.05,"Fair","Poor")))',
+        [t('accounting.analysis')]: '=IF(B28>0.15,"Strong cash generation from sales",IF(B28>0.1,"Good cash conversion",IF(B28>0.05,"Adequate cash flow","Poor cash conversion")))'
+      },
+      {
+        [t('accounting.description')]: '  ' + t('accounting.cashFlowToAssets'),
+        [t('accounting.amount')]: '=B17/SUMIFS(INDIRECT("BalanceSheet!B:B"),INDIRECT("BalanceSheet!A:A"),"*Total Assets*")',
+        [t('accounting.trend')]: '=IF(B29>0.1,"Excellent",IF(B29>0.05,"Good",IF(B29>0,"Fair","Poor")))',
+        [t('accounting.analysis')]: '=IF(B29>0.1,"Efficient asset utilization",IF(B29>0.05,"Good asset efficiency",IF(B29>0,"Adequate utilization","Inefficient asset utilization")))'
+      },
+      {
+        [t('accounting.description')]: '  ' + t('accounting.capitalIntensity'),
+        [t('accounting.amount')]: '=SUMIFS(INDIRECT("BalanceSheet!B:B"),INDIRECT("BalanceSheet!A:A"),"*Fixed Assets*")/SUMIFS(INDIRECT("ProfitAndLoss!B:B"),INDIRECT("ProfitAndLoss!A:A"),"*Sales*")',
+        [t('accounting.trend')]: `=IF(B30<${industryMetrics.retail.capitalIntensity.excellent},"Excellent",IF(B30<${industryMetrics.retail.capitalIntensity.good},"Good",IF(B30<${industryMetrics.retail.capitalIntensity.fair},"Fair","Poor")))`,
+        [t('accounting.analysis')]: `=IF(B30<${industryMetrics.retail.capitalIntensity.excellent},"Efficient capital utilization",IF(B30<${industryMetrics.retail.capitalIntensity.good},"Good capital efficiency",IF(B30<${industryMetrics.retail.capitalIntensity.fair},"Adequate utilization","Inefficient capital utilization")))`
+      },
+      {
+        [t('accounting.description')]: '  ' + t('accounting.employeeProductivity'),
+        [t('accounting.amount')]: '=SUMIFS(INDIRECT("ProfitAndLoss!B:B"),INDIRECT("ProfitAndLoss!A:A"),"*Sales*")/SUMIFS(INDIRECT("HR!B:B"),INDIRECT("HR!A:A"),"*Total Employees*")',
+        [t('accounting.trend')]: `=IF(B31>${industryMetrics.retail.employeeProductivity.excellent},"Excellent",IF(B31>${industryMetrics.retail.employeeProductivity.good},"Good",IF(B31>${industryMetrics.retail.employeeProductivity.fair},"Fair","Poor")))`,
+        [t('accounting.analysis')]: `=IF(B31>${industryMetrics.retail.employeeProductivity.excellent},"High employee productivity",IF(B31>${industryMetrics.retail.employeeProductivity.good},"Good productivity",IF(B31>${industryMetrics.retail.employeeProductivity.fair},"Adequate productivity","Low productivity")))`
+      },
+      {
+        [t('accounting.description')]: '  ' + t('accounting.capacityUtilization'),
+        [t('accounting.amount')]: '=SUMIFS(INDIRECT("Production!B:B"),INDIRECT("Production!A:A"),"*Actual Output*")/SUMIFS(INDIRECT("Production!B:B"),INDIRECT("Production!A:A"),"*Maximum Output*")',
+        [t('accounting.trend')]: `=IF(B32>${industryMetrics.manufacturing.capacityUtilization.excellent},"Excellent",IF(B32>${industryMetrics.manufacturing.capacityUtilization.good},"Good",IF(B32>${industryMetrics.manufacturing.capacityUtilization.fair},"Fair","Poor")))`,
+        [t('accounting.analysis')]: `=IF(B32>${industryMetrics.manufacturing.capacityUtilization.excellent},"Optimal capacity utilization",IF(B32>${industryMetrics.manufacturing.capacityUtilization.good},"Good utilization",IF(B32>${industryMetrics.manufacturing.capacityUtilization.fair},"Adequate utilization","Underutilized capacity")))`
+      },
+      {
+        [t('accounting.description')]: '  ' + t('accounting.customerRetention'),
+        [t('accounting.amount')]: '=SUMIFS(INDIRECT("Sales!B:B"),INDIRECT("Sales!A:A"),"*Repeat Customers*")/SUMIFS(INDIRECT("Sales!B:B"),INDIRECT("Sales!A:A"),"*Total Customers*")',
+        [t('accounting.trend')]: `=IF(B33>${industryMetrics.service.customerRetention.excellent},"Excellent",IF(B33>${industryMetrics.service.customerRetention.good},"Good",IF(B33>${industryMetrics.service.customerRetention.fair},"Fair","Poor")))`,
+        [t('accounting.analysis')]: `=IF(B33>${industryMetrics.service.customerRetention.excellent},"Strong customer loyalty",IF(B33>${industryMetrics.service.customerRetention.good},"Good retention",IF(B33>${industryMetrics.service.customerRetention.fair},"Adequate retention","Poor customer retention")))`
       }
     ];
 
@@ -915,6 +997,148 @@ const Accounting = () => {
             },
             options: {
               title: { display: true, text: 'Working Capital Efficiency' },
+              scale: {
+                ticks: { beginAtZero: true }
+              }
+            }
+          },
+          {
+            type: 'bar',
+            data: {
+              labels: ['Operating CF Margin', 'Cash Flow Coverage', 'Cash Flow to Debt', 'Cash Flow to Revenue', 'Cash Flow to Assets'],
+              datasets: [
+                {
+                  label: 'Current',
+                  data: ['=B25', '=B26', '=B27', '=B28', '=B29'],
+                  backgroundColor: ['#4CAF50', '#2196F3', '#FFC107', '#FF5722', '#9C27B0']
+                }
+              ]
+            },
+            options: {
+              title: { display: true, text: 'Cash Flow Coverage Ratios' },
+              scales: { yAxes: [{ ticks: { beginAtZero: true } }] }
+            }
+          },
+          {
+            type: 'line',
+            data: {
+              labels: ['Q1', 'Q2', 'Q3', 'Q4'],
+              datasets: [
+                {
+                  label: 'Operating Cash Flow Margin',
+                  data: ['=OFFSET(B25,0,-1)', '=OFFSET(B25,0,-2)', '=OFFSET(B25,0,-3)', '=OFFSET(B25,0,-4)'],
+                  borderColor: '#2196F3',
+                  fill: false
+                },
+                {
+                  label: 'Cash Flow Coverage',
+                  data: ['=OFFSET(B26,0,-1)', '=OFFSET(B26,0,-2)', '=OFFSET(B26,0,-3)', '=OFFSET(B26,0,-4)'],
+                  borderColor: '#4CAF50',
+                  fill: false
+                },
+                {
+                  label: 'Cash Flow to Debt',
+                  data: ['=OFFSET(B27,0,-1)', '=OFFSET(B27,0,-2)', '=OFFSET(B27,0,-3)', '=OFFSET(B27,0,-4)'],
+                  borderColor: '#FF5722',
+                  fill: false
+                }
+              ]
+            },
+            options: {
+              title: { display: true, text: 'Cash Flow Coverage Trends' },
+              scales: { yAxes: [{ ticks: { beginAtZero: true } }] }
+            }
+          },
+          {
+            type: 'radar',
+            data: {
+              labels: ['Operating CF Margin', 'Cash Flow Coverage', 'Cash Flow to Debt', 'Cash Flow to Revenue', 'Cash Flow to Assets'],
+              datasets: [
+                {
+                  label: 'Current',
+                  data: ['=B25', '=B26', '=B27', '=B28', '=B29'],
+                  backgroundColor: 'rgba(75, 192, 192, 0.2)',
+                  borderColor: 'rgba(75, 192, 192, 1)',
+                  pointBackgroundColor: 'rgba(75, 192, 192, 1)',
+                  pointBorderColor: '#fff',
+                  pointHoverBackgroundColor: '#fff',
+                  pointHoverBorderColor: 'rgba(75, 192, 192, 1)'
+                }
+              ]
+            },
+            options: {
+              title: { display: true, text: 'Cash Flow Performance Overview' },
+              scale: {
+                ticks: { beginAtZero: true }
+              }
+            }
+          },
+          {
+            type: 'bar',
+            data: {
+              labels: ['Capital Intensity', 'Employee Productivity', 'Capacity Utilization', 'Customer Retention'],
+              datasets: [
+                {
+                  label: 'Current',
+                  data: ['=B30', '=B31', '=B32', '=B33'],
+                  backgroundColor: ['#4CAF50', '#2196F3', '#FFC107', '#FF5722']
+                }
+              ]
+            },
+            options: {
+              title: { display: true, text: 'Industry-Specific Performance Metrics' },
+              scales: { yAxes: [{ ticks: { beginAtZero: true } }] }
+            }
+          },
+          {
+            type: 'line',
+            data: {
+              labels: ['Q1', 'Q2', 'Q3', 'Q4', 'Q5', 'Q6', 'Q7', 'Q8'],
+              datasets: [
+                {
+                  label: 'Capital Intensity',
+                  data: ['=OFFSET(B30,0,-1)', '=OFFSET(B30,0,-2)', '=OFFSET(B30,0,-3)', '=OFFSET(B30,0,-4)', '=OFFSET(B30,0,-5)', '=OFFSET(B30,0,-6)', '=OFFSET(B30,0,-7)', '=OFFSET(B30,0,-8)'],
+                  borderColor: '#2196F3',
+                  fill: false
+                },
+                {
+                  label: 'Employee Productivity',
+                  data: ['=OFFSET(B31,0,-1)', '=OFFSET(B31,0,-2)', '=OFFSET(B31,0,-3)', '=OFFSET(B31,0,-4)', '=OFFSET(B31,0,-5)', '=OFFSET(B31,0,-6)', '=OFFSET(B31,0,-7)', '=OFFSET(B31,0,-8)'],
+                  borderColor: '#4CAF50',
+                  fill: false
+                },
+                {
+                  label: 'Customer Retention',
+                  data: ['=OFFSET(B33,0,-1)', '=OFFSET(B33,0,-2)', '=OFFSET(B33,0,-3)', '=OFFSET(B33,0,-4)', '=OFFSET(B33,0,-5)', '=OFFSET(B33,0,-6)', '=OFFSET(B33,0,-7)', '=OFFSET(B33,0,-8)'],
+                  borderColor: '#FF5722',
+                  fill: false
+                }
+              ]
+            },
+            options: {
+              title: { display: true, text: 'Long-term Performance Trends' },
+              scales: { yAxes: [{ ticks: { beginAtZero: true } }] }
+            }
+          },
+          {
+            type: 'radar',
+            data: {
+              labels: ['Capital Intensity', 'Employee Productivity', 'Capacity Utilization', 'Customer Retention', 'Cash Flow Margin', 'Working Capital Ratio'],
+              datasets: [
+                {
+                  label: 'Current',
+                  data: ['=B30', '=B31', '=B32', '=B33', '=B25', '=B20'],
+                  backgroundColor: 'rgba(75, 192, 192, 0.2)',
+                  borderColor: 'rgba(75, 192, 192, 1)',
+                  pointBackgroundColor: 'rgba(75, 192, 192, 1)',
+                  pointBorderColor: '#fff',
+                  pointHoverBackgroundColor: '#fff',
+                  pointHoverBorderColor: 'rgba(75, 192, 192, 1)'
+                }
+              ]
+            },
+            options: {
+              title: { display: true, text: 'Comprehensive Performance Overview' },
               scale: {
                 ticks: { beginAtZero: true }
               }
